@@ -1,0 +1,94 @@
+﻿@using DocumentsPOC.Dto
+@model List<DocumentListDto>
+
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            
+            <ol id="documentList">
+                @foreach(var doc in Model)
+                {
+                    var id = "documentId" + doc.Id;
+                    <li id="@id">@doc.Title</li>
+                }
+            </ol>
+        </div>
+        <div class="col-6">
+            <div>
+                <button class="addDocBtn">Add To MyFolder</button>
+            </div>
+            <div id ="docContent">
+
+            </div>
+        </div>
+    </div>
+   
+</div>
+
+<script>
+    $(document).ready(function () {
+        var currentlySelectedDocumentId = null;
+        $("#htmlSubmit").click(function () {
+            var inputData = document.getElementById('htmlInput').value
+            var dataa = { html: inputData };
+            $.ajax({
+                url: '@Url.Action("post", "htmlpost")',
+                type: 'POST',
+                
+                contentType: 'application/json',
+                data: JSON.stringify(dataa),
+                success: function (response) {
+                    console.log(inputData);
+                }
+            });
+        });
+        
+        
+        var listItems = document.querySelectorAll("#documentList li");
+        listItems.forEach(function (item) {
+            //Add click event listener to each list item
+            item.addEventListener("click", function () {
+
+                // Get the id of the clicked element
+                var clickedItemId = item.id;
+                var docId = clickedItemId.substring("documentId".length);
+
+                // For keeping track of current document
+                currentlySelectedDocumentId = docId;
+
+                console.log("Currently selected docId",currentlySelectedDocumentId)
+
+                handleClick(docId);
+            });
+        });
+
+        $(".addDocBtn").click(function () {
+            $.ajax({
+                url: '@Url.Action("AddDocumentToFolder")',
+                type:'GET',
+                data: {docId:currentlySelectedDocumentId, folderId:1},
+                success: function (response) {
+                    alert("Saved to MyFolder successfully");
+                }
+            });
+        });
+
+        // Hide the button initially
+        $(".addDocBtn").hide();
+    });
+
+    function handleClick(id) {
+        console.log("Clicked item id is " + id);
+        $(".addDocBtn").show();
+        $.ajax({
+            url: '@Url.Action("GetDocumentContent")',
+            type:'GET',
+            data: {docId:id},
+            success: function (response) {
+                $("#docContent").html(response);
+            }
+        })
+    }
+
+
+</script>

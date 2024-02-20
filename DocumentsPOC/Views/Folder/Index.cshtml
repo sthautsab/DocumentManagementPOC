@@ -1,0 +1,96 @@
+﻿
+@using DocumentsPOC.Dto
+@model List<DocumentListDto>
+
+<h1>My Folder</h1>
+
+<div class="container" id="page">
+    <div class="row">
+        <div class="col-6" id="listContainer">
+
+            <ol id="documentList">
+                @foreach (var doc in Model)
+                {
+                    var id = "documentId" + doc.Id;
+                    var removeId = doc.Id;
+                    
+                    <li id="@id">@doc.Title</li>
+                    <button id=@removeId>Remove</button>
+                    
+                }
+            </ol>
+        </div>
+        <div class="col-6">
+            <div id="docContent">
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+       
+
+
+        var listItems = document.querySelectorAll("#documentList li");
+        listItems.forEach(function (item) {
+            //Add click event listener to each list item
+            item.addEventListener("click", function () {
+
+                // Get the id of the clicked element
+                var clickedItemId = item.id;
+                var docId = clickedItemId.substring("documentId".length);
+
+                // For keeping track of current document
+                currentlySelectedDocumentId = docId;
+
+                console.log("Currently selected docId", currentlySelectedDocumentId)
+
+                handleClick(docId);
+            });
+        });
+
+
+        var removeItems = document.querySelectorAll("#documentList button");
+        removeItems.forEach(function (item) {
+            //Add click event listener to each list item
+            item.addEventListener("click", function () {
+
+                handleRemoveClick(item.id);
+            });
+        });
+
+    });
+
+    function handleRemoveClick(id) {
+        console.log("Clicked item id is " + id);
+        $.ajax({
+            url: '@Url.Action("RemoveDocumentFromFolder")',
+            type: 'GET',
+            data: { docId: id },
+            success: function (response) {
+                var $responseHtml = $(response);
+
+                var listContainerElement = $responseHtml.find("#documentList")
+
+                $("#listContainer").html(listContainerElement);
+                console.log("removed successfully");
+            }
+        });
+    }
+
+    function handleClick(id) {
+        console.log("Clicked item id is " + id);
+        $.ajax({
+            url: '@Url.Action("GetDocumentContent","Document")',
+            type: 'GET',
+            data: { docId: id },
+            success: function (response) {
+                $("#docContent").html(response);
+            }
+        })
+    }
+
+
+</script>
