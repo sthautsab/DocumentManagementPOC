@@ -19,7 +19,7 @@
                 <button class="addPartialDocBtn">Add Selected Part</button>
                 <input type="text" id="selectedPartialContentInput" style="display: none;">
             </div>
-            <div id ="docContent">
+            <div id ="docContent" >
 
             </div>
         </div>
@@ -116,7 +116,16 @@
             type:'GET',
             data: {docId:id},
             success: function (response) {
-                $("#docContent").html(response);
+                // console.log($("#docContent").innerHTML)
+                $("#docContent").html(response.content);
+                if (!response.isSelectable) {
+                    document.getElementById("docContent").classList.add("unselectable");
+                }
+                else {
+                    if (document.getElementById("docContent").classList.contains("unselectable")) {
+                        document.getElementById("docContent").classList.remove("unselectable");
+                    }
+                }
             }
         })
     }

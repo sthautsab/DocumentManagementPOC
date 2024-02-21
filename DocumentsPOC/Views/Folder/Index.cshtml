@@ -2,6 +2,8 @@
 @using DocumentsPOC.Dto
 @model List<DocumentListDto>
 
+
+
 <h1>My Folder</h1>
 
 <div class="container" id="page">
@@ -87,7 +89,16 @@
             type: 'GET',
             data: { docId: id },
             success: function (response) {
-                $("#docContent").html(response);
+                // console.log($("#docContent").innerHTML)
+                $("#docContent").html(response.content);
+                if (!response.isSelectable) {
+                    document.getElementById("docContent").classList.add("unselectable");
+                }
+                else {
+                    if (document.getElementById("docContent").classList.contains("unselectable")) {
+                        document.getElementById("docContent").classList.remove("unselectable");
+                    }
+                }
             }
         })
     }

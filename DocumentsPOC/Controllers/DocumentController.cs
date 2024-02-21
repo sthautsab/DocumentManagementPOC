@@ -21,10 +21,16 @@ namespace DocumentsPOC.Controllers
             return View(documentsList);
         }
 
-        public async Task<string> GetDocumentContent(int docId)
+        public async Task<IActionResult> GetDocumentContent(int docId)
         {
+            var document = await _documentRepository.GetDocumentById(docId);
+            ContentOutputDto contentOutputDto = new ContentOutputDto()
+            {
+                Content = document.Content,
+                IsSelectable = document.IsSelectable
+            };
             string content = await _documentRepository.GetDocumentContentByIdAsync(docId);
-            return content;
+            return Ok(contentOutputDto);
         }
 
         public async Task AddDocumentToFolder(int docId, int folderId)
@@ -43,7 +49,7 @@ namespace DocumentsPOC.Controllers
             {
                 Html = partialDocumentSaveDto.PartialContent,
                 Title = partialDocumentName,
-                ParentId= document.Id
+                ParentId = document.Id
             };
 
             int insertedDocId = await _documentRepository.InsertDocument(docInsert);
