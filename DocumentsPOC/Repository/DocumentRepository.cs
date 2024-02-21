@@ -15,7 +15,7 @@ namespace DocumentsPOC.Repository
 
         public async Task<List<DocumentListDto>> GetAllDocumentTitlesAsync()
         {
-            var documents = await _context.Documents.Select(x => new DocumentListDto { Id = x.Id, Title = x.Title }).ToListAsync();
+            var documents = await _context.Documents.Where(m=> m.ParentId==null).Select(x => new DocumentListDto { Id = x.Id, Title = x.Title }).ToListAsync();
             return documents;
         }
 
@@ -37,7 +37,10 @@ namespace DocumentsPOC.Repository
             Document document = new Document
             {
                 Title = documentInsertDto.Title,
-                Content = documentInsertDto.Html
+                Content = documentInsertDto.Html,
+                IsSelectable=documentInsertDto.Selectable??false,
+                ParentId = documentInsertDto.ParentId,
+                
             };
             try
             {

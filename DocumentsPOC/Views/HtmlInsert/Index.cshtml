@@ -1,6 +1,7 @@
 ﻿<div>
     Title: <input id="htmlTitle" type="text" />
     Html : <input id="htmlInput" type="text" />
+    is Selectable: <input id="htmlSelectable" type="checkbox" />
     <button type="submit" id="htmlSubmit">Add</button>
 </div>
 
@@ -10,7 +11,8 @@
         $("#htmlSubmit").click(function () {
             var inputHtmlData = document.getElementById('htmlInput').value;
             var inputTitleData = document.getElementById('htmlTitle').value;
-            var dataa = { Title: inputTitleData, Html: inputHtmlData };
+            var inputSelectable = document.querySelector('#htmlSelectable').checked;
+            var dataa = { Title: inputTitleData, Html: inputHtmlData, Selectable: inputSelectable };
             $.ajax({
                 url: '/HtmlInsert/Post', // Replace YourControllerName with the actual name of your controller
                 type: 'POST',

@@ -6,5 +6,7 @@
 
 
         public string Html { get; set; }
+        public bool? Selectable { get; set; }
+        public int? ParentId { get; set; }
     }
 }

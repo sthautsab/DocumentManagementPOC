@@ -42,7 +42,8 @@ namespace DocumentsPOC.Controllers
             DocumentInsertDto docInsert = new DocumentInsertDto()
             {
                 Html = partialDocumentSaveDto.PartialContent,
-                Title = partialDocumentName
+                Title = partialDocumentName,
+                ParentId= document.Id
             };
 
             int insertedDocId = await _documentRepository.InsertDocument(docInsert);
