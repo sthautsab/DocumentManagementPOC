@@ -2,7 +2,52 @@
     ViewData["Title"] = "Home Page";
 }
 
+
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <button id="show">Get Markup</button>
 </div>
+
+<script>
+    $(document).ready(function () {
+       $("#show").click(function(){
+           var x = getSelectedMarkup();
+           console.log("returned result",x);
+       })
+    });
+
+    function getSelectedMarkup() {
+        var selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            var range = selection.getRangeAt(0);
+            console.log(range)
+            var container = document.createElement('div');
+            container.appendChild(range.cloneContents());
+
+            console.log(container.innerHTML);
+            var parent = range.commonAncestorContainer.parentNode;
+
+            console.log("parent",parent)
+
+            var elWithSelection = parent.cloneNode(false); // Cloning only the element, not its children
+            elWithSelection.innerHTML = container.innerHTML;
+            return elWithSelection.outerHTML;
+        } else {
+            return "No text selected.";
+        }
+    }
+
+    // function getSelectedMarkup() {
+    //     var selection = window.getSelection();
+    //     if (selection.rangeCount > 0) {
+    //         var range = selection.getRangeAt(0);
+    //         var container = document.createElement('div');
+    //         container.appendChild(range.cloneContents());
+    //         return container.outerHTML;
+    //     } else {
+    //         return "No text selected.";
+    //     }
+    // }
+</script>

@@ -21,9 +21,9 @@ namespace DocumentsPOC.Controllers
         }
         [HttpPost]
         //[Route("api/post")]
-        public IActionResult Post([FromBody] DocumentInsertDto documentInsertDto)
+        public async Task<IActionResult> Post([FromBody] DocumentInsertDto documentInsertDto)
         {
-            _documentRepository.InsertDocument(documentInsertDto);
+            int createdDoc = await _documentRepository.InsertDocument(documentInsertDto);
             return Ok(documentInsertDto);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using DocumentsPOC.Dto;
+using DocumentsPOC.Models;
 
 namespace DocumentsPOC.Repository
 {
@@ -8,8 +9,10 @@ namespace DocumentsPOC.Repository
 
         Task<string?> GetDocumentContentByIdAsync(int id);
 
-        Task InsertDocument(DocumentInsertDto documentInsertDto);
+        Task<int> InsertDocument(DocumentInsertDto documentInsertDto);
 
         Task AddDocumentToFolder(int docId, int folderId);
+
+        Task<Document> GetDocumentById(int docId);
     }
 }

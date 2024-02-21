@@ -19,6 +19,12 @@ namespace DocumentsPOC.Repository
             return documents;
         }
 
+        public async Task<Document> GetDocumentById(int docId)
+        {
+            var document = await _context.Documents.Where(x => x.Id == docId).FirstOrDefaultAsync();
+            return document;
+        }
+
 
         public async Task<string?> GetDocumentContentByIdAsync(int id)
         {
@@ -26,7 +32,7 @@ namespace DocumentsPOC.Repository
             return content;
         }
 
-        public async Task InsertDocument(DocumentInsertDto documentInsertDto)
+        public async Task<int> InsertDocument(DocumentInsertDto documentInsertDto)
         {
             Document document = new Document
             {
@@ -38,11 +44,12 @@ namespace DocumentsPOC.Repository
 
                 _context.Documents.Add(document);
                 await _context.SaveChangesAsync();
+                return document.Id;
 
             }
             catch (Exception ex)
             {
-
+                return 0;
             }
 
         }

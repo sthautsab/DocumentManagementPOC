@@ -31,5 +31,24 @@ namespace DocumentsPOC.Controllers
         {
             await _documentRepository.AddDocumentToFolder(docId, folderId);
         }
+
+        [HttpPost]
+        public async Task AddPartialDocumentToFolder([FromBody] PartialDocumentSaveDto partialDocumentSaveDto)
+        {
+            var document = await _documentRepository.GetDocumentById(partialDocumentSaveDto.ParentDocId);
+
+            var partialDocumentName = document.Title;
+
+            DocumentInsertDto docInsert = new DocumentInsertDto()
+            {
+                Html = partialDocumentSaveDto.PartialContent,
+                Title = partialDocumentName
+            };
+
+            int insertedDocId = await _documentRepository.InsertDocument(docInsert);
+
+            await AddDocumentToFolder(insertedDocId, partialDocumentSaveDto.FolderId);
+
+        }
     }
 }

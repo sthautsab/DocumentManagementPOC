@@ -16,6 +16,8 @@
         <div class="col-6">
             <div>
                 <button class="addDocBtn">Add To MyFolder</button>
+                <button class="addPartialDocBtn">Add Selected Part</button>
+                <input type="text" id="selectedPartialContentInput" style="display: none;">
             </div>
             <div id ="docContent">
 
@@ -73,13 +75,42 @@
             });
         });
 
+        //Selcted Portion Saving
+        $(".addPartialDocBtn").click(function () {
+            var selectedPart = getSelectedMarkup();
+            if (selectedPart == null) {
+                alert("select something");
+            }
+            else {
+                document.getElementById("selectedPartialContentInput").value = selectedPart;
+
+                
+                var dataa = { ParentDocId: currentlySelectedDocumentId,
+                    PartialContent: document.getElementById("selectedPartialContentInput").value,
+                    FolderId: 1
+                    };
+                $.ajax({
+                    url: '@Url.Action("AddPartialDocumentToFolder")',
+                    type:'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataa),
+                    success: function (response) {
+                        alert("Added Partial Content to folder");
+                    }
+                });
+            }
+
+        });
+
         // Hide the button initially
         $(".addDocBtn").hide();
+        $(".addPartialDocBtn").hide();
     });
 
     function handleClick(id) {
         console.log("Clicked item id is " + id);
         $(".addDocBtn").show();
+        $(".addPartialDocBtn").show();
         $.ajax({
             url: '@Url.Action("GetDocumentContent")',
             type:'GET',
@@ -88,6 +119,27 @@
                 $("#docContent").html(response);
             }
         })
+    }
+
+    function getSelectedMarkup() {
+        var selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            var range = selection.getRangeAt(0);
+            // console.log(range)
+            var container = document.createElement('div');
+            container.appendChild(range.cloneContents());
+
+            // console.log(container.innerHTML);
+            var parent = range.commonAncestorContainer.parentNode;
+
+            console.log("parent", parent)
+
+            var elWithSelection = parent.cloneNode(false); // Cloning only the element, not its children
+            elWithSelection.innerHTML = container.innerHTML;
+            return elWithSelection.outerHTML;
+        } else {
+            return null;
+        }
     }
 
 
