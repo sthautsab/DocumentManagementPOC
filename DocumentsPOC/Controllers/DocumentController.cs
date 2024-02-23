@@ -55,6 +55,11 @@ namespace DocumentsPOC.Controllers
             int insertedDocId = await _documentRepository.InsertDocument(docInsert);
 
             await AddDocumentToFolder(insertedDocId, partialDocumentSaveDto.FolderId);
+        }
+
+        [HttpPost]
+        public async Task AddCommentOnDocument([FromBody] AddCommentDto addCommentDto)
+        {
 
         }
     }

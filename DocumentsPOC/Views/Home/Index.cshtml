@@ -1,4 +1,6 @@
-﻿@{
+﻿@* Folder View *@
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -20,23 +22,73 @@
 
     function getSelectedMarkup() {
         var selection = window.getSelection();
-        if (selection.rangeCount > 0) {
-            var range = selection.getRangeAt(0);
-            console.log(range)
-            var container = document.createElement('div');
-            container.appendChild(range.cloneContents());
 
-            console.log(container.innerHTML);
-            var parent = range.commonAncestorContainer.parentNode;
+        
+        var range = selection.getRangeAt(0);
 
-            console.log("parent",parent)
+    
 
-            var elWithSelection = parent.cloneNode(false); // Cloning only the element, not its children
-            elWithSelection.innerHTML = container.innerHTML;
-            return elWithSelection.outerHTML;
-        } else {
-            return "No text selected.";
-        }
+        window.getSelection().addRange(range);
+        console.log(range)
+        console.log(range.cloneContents())
+        // Normalize the range to cover the entire selection
+        // range.normalize;
+
+        
+
+        //Create a new element to wrap the selected text
+        var highlightSpan = document.createElement('span');
+        highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
+
+        var clonedContent = range.cloneContents();
+        // range.surroundContents(highlightSpan);
+        highlightSpan.appendChild(clonedContent);
+
+       // clonedContent.surroundContents(highlightSpan);
+        range.deleteContents();
+        console.log(range.cloneContents());
+        range.insertNode(highlightSpan);
+
+
+        // // Wrap the selected text with the new element
+        // range.surroundContents(highlightSpan);
+
+        // var range = document.createRange();
+
+        // // Set the start and end points of the range
+        // range.setStart(selection.anchorNode, selection.anchorOffset);
+        // range.setEnd(selection.focusNode, selection.focusOffset);
+
+        // // Highlight the selected text range
+        // var selectionHighlight = document.createElement('span');
+        // selectionHighlight.style.backgroundColor = 'yellow';
+        // range.surroundContents(selectionHighlight);
+
+        // // Clear any existing selections
+        // window.getSelection().removeAllRanges();
+
+        // Add the new range to the selection
+        // var gotSelec = window.getSelection().addRange(range);
+
+        // console.log("got selection", gotSelec);
+        console.log("selection obj",selection);
+        // if (selection.rangeCount > 0) {
+        //     var range = selection.getRangeAt(0);
+        //     // console.log(range)
+        //     var container = document.createElement('div');
+        //     container.appendChild(range.cloneContents());
+
+        //     // console.log(container.innerHTML);
+        //     var parent = range.commonAncestorContainer.parentNode;
+
+        //     // console.log("parent",parent)
+
+        //     var elWithSelection = parent.cloneNode(false); // Cloning only the element, not its children
+        //     elWithSelection.innerHTML = container.innerHTML;
+        //     return elWithSelection.outerHTML;
+        // } else {
+        //     return "No text selected.";
+        // }
     }
 
     // function getSelectedMarkup() {

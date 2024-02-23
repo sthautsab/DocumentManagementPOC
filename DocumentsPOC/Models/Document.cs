@@ -14,6 +14,8 @@ namespace DocumentsPOC.Models
         [ForeignKey("Folder")]
         public int? FolderId { get; set; }
 
+        public virtual Comment Comments { get; set; }
+
 
     }
 }

@@ -13,5 +13,6 @@ namespace DocumentsPOC.Context
         // DbSet properties for your entities
         public DbSet<Document> Documents { get; set; }
         public DbSet<Folder> Folders { get; set; }
+        public DbSet<Comment> Comments { get; set; }
     }
 }

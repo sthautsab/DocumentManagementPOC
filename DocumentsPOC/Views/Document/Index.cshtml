@@ -1,9 +1,11 @@
-﻿@using DocumentsPOC.Dto
+﻿@* Main Document View *@
+
+@using DocumentsPOC.Dto
 @model List<DocumentListDto>
 
 <div class="container">
     <div class="row">
-        <div class="col-6">
+        <div class="col-3">
             
             <ol id="documentList">
                 @foreach(var doc in Model)
@@ -22,6 +24,10 @@
             <div id ="docContent" >
 
             </div>
+        </div>
+        <div class="col-3">
+            <input type = "text" id="commentTxt"/>
+            <button id="commentBtn">Add Comment</button>
         </div>
     </div>
    
@@ -44,7 +50,6 @@
                 }
             });
         });
-        
         
         var listItems = document.querySelectorAll("#documentList li");
         listItems.forEach(function (item) {
@@ -101,6 +106,32 @@
             }
 
         });
+
+
+        $("#commentBtn").click(function () {
+            console.log("clicked addComment")
+            var selection = window.getSelection();
+            var range = selection.getRangeAt(0);
+            var rangeString = JSON.stringify(range);
+            var rangString = JSON.stringify(selection);
+            
+            var rangeObj = {
+
+            }
+
+            var comment = document.getElementById("commentTxt").value;
+
+            var data = { Range: JSON.stringify(range), CommentContent: comment, DocumentId: currentlySelectedDocumentId };
+            $.ajax({
+                url: '@Url.Action("AddCommentOnDocument")',
+                type:'POST',
+                contentType:'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert("success");
+                }
+            })
+        })
 
         // Hide the button initially
         $(".addDocBtn").hide();
