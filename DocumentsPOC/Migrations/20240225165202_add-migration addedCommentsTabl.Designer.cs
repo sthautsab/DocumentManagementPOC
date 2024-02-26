@@ -4,6 +4,7 @@ using DocumentsPOC.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsPOC.Migrations
 {
     [DbContext(typeof(DocumentDbContext))]
-    partial class DocumentDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240225165202_add-migration addedCommentsTabl")]
+    partial class addmigrationaddedCommentsTabl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,14 +41,11 @@ namespace DocumentsPOC.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("CommentId");
 
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("DocumentId")
+                        .IsUnique()
+                        .HasFilter("[DocumentId] IS NOT NULL");
 
                     b.ToTable("Comments");
                 });
@@ -99,32 +99,11 @@ namespace DocumentsPOC.Migrations
                     b.ToTable("Folders");
                 });
 
-            modelBuilder.Entity("DocumentsPOC.Models.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
-                    b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("DocumentsPOC.Models.Comment", b =>
                 {
                     b.HasOne("DocumentsPOC.Models.Document", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("DocumentId");
-
-                    b.HasOne("DocumentsPOC.Models.User", null)
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId");
+                        .WithOne("Comments")
+                        .HasForeignKey("DocumentsPOC.Models.Comment", "DocumentId");
                 });
 
             modelBuilder.Entity("DocumentsPOC.Models.Document", b =>
@@ -136,17 +115,13 @@ namespace DocumentsPOC.Migrations
 
             modelBuilder.Entity("DocumentsPOC.Models.Document", b =>
                 {
-                    b.Navigation("Comments");
+                    b.Navigation("Comments")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DocumentsPOC.Models.Folder", b =>
                 {
                     b.Navigation("Documents");
-                });
-
-            modelBuilder.Entity("DocumentsPOC.Models.User", b =>
-                {
-                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }

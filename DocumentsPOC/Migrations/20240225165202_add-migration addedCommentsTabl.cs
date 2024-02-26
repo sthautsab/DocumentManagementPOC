@@ -1,18 +1,17 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace DocumentsPOC.Migrations
 {
     /// <inheritdoc />
-    public partial class addedCommentTable : Migration
+    public partial class addmigrationaddedCommentsTabl : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -22,19 +21,19 @@ namespace DocumentsPOC.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.CommentId);
+                    table.PrimaryKey("PK_Comments", x => x.CommentId);
                     table.ForeignKey(
-                        name: "FK_Comment_Documents_DocumentId",
+                        name: "FK_Comments_Documents_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "Documents",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_DocumentId",
-                table: "Comment",
+                name: "IX_Comments_DocumentId",
+                table: "Comments",
                 column: "DocumentId",
-                unique: true,
+                unique: false,
                 filter: "[DocumentId] IS NOT NULL");
         }
 
@@ -42,7 +41,7 @@ namespace DocumentsPOC.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
         }
     }
 }

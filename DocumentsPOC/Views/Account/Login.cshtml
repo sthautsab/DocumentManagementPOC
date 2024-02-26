@@ -1,0 +1,27 @@
+﻿
+<div class="d-flex align-center justify-content-center">
+    <div>
+        <input id="loginInput"/>
+    </div>
+    <button id="loginBtn">Login</button>
+</div>
+
+<script>
+    $(document).ready(function(){
+
+        $("#loginBtn").click(function () {
+            var username = document.getElementById("loginInput").value;
+
+            $.ajax({
+                url:'@Url.Action("Login")',
+                type:'POST',
+                contentType:'application/json',
+                data: JSON.stringify({UserName:username}),
+                success: function (response) {
+                    alert(response)
+                }
+
+            })
+        })
+    })
+</script>

@@ -14,5 +14,6 @@ namespace DocumentsPOC.Context
         public DbSet<Document> Documents { get; set; }
         public DbSet<Folder> Folders { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

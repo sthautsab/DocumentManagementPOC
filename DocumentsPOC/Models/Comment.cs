@@ -10,5 +10,8 @@ namespace DocumentsPOC.Models
 
         [ForeignKey("Document")]
         public int? DocumentId { get; set; }
+
+        [ForeignKey("User")]
+        public int? UserId { get; set; }
     }
 }

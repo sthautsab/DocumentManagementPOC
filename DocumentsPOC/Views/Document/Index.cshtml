@@ -110,25 +110,42 @@
 
         $("#commentBtn").click(function () {
             console.log("clicked addComment")
-            var selection = window.getSelection();
-            var range = selection.getRangeAt(0);
-            var rangeString = JSON.stringify(range);
-            var rangString = JSON.stringify(selection);
-            
-            var rangeObj = {
 
+            var selection = window.getSelection();
+            if (!(selection.rangeCount > 0)) {
+                alert("select something");
+                return;
             }
+            var range = selection.getRangeAt(0);
+
+            var rangySerializedRange = rangy.serializeRange(range,true);
+            var rangyDeserializedRange = rangy.deserializeRange(rangySerializedRange);
+
+
+            //Create a new element to wrap the selected text
+            var highlightSpan = document.createElement('span');
+            highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
+
+            var clonedContent = rangyDeserializedRange.cloneContents();
+            console.log(clonedContent)
+            // range.surroundContents(highlightSpan);
+            highlightSpan.appendChild(clonedContent);
+
+            rangyDeserializedRange.deleteContents();
+            // console.log(range.cloneContents());
+            rangyDeserializedRange.insertNode(highlightSpan);
+
 
             var comment = document.getElementById("commentTxt").value;
 
-            var data = { Range: JSON.stringify(range), CommentContent: comment, DocumentId: currentlySelectedDocumentId };
+            var data = { Range: rangySerializedRange, CommentContent: comment, DocumentId: currentlySelectedDocumentId };
             $.ajax({
                 url: '@Url.Action("AddCommentOnDocument")',
                 type:'POST',
                 contentType:'application/json',
                 data: JSON.stringify(data),
                 success: function (response) {
-                    alert("success");
+                    alert("successfully added comment");
                 }
             })
         })
@@ -138,7 +155,10 @@
         $(".addPartialDocBtn").hide();
     });
 
+    
     function handleClick(id) {
+        window.getSelection().removeAllRanges();
+
         console.log("Clicked item id is " + id);
         $(".addDocBtn").show();
         $(".addPartialDocBtn").show();
@@ -148,8 +168,12 @@
             data: {docId:id},
             success: function (response) {
                 // console.log($("#docContent").innerHTML)
-                $("#docContent").html(response.content);
-                if (!response.isSelectable) {
+                $("#docContent").html(response.contentOutputDto.content);
+
+                //hightlight
+                addHighlightForAllRanges(response.rangeCommentInfo);
+
+                if (!response.contentOutputDto.isSelectable) {
                     document.getElementById("docContent").classList.add("unselectable");
                 }
                 else {
@@ -159,6 +183,37 @@
                 }
             }
         })
+    }
+
+    function addHighlightForAllRanges(rangeCommentInfo) {
+
+
+        rangeCommentInfo.forEach(function (info) {
+            deserializedRange = rangy.deserializeRange(info.range);
+
+            //Create a new element to wrap the selected text
+            var highlightSpan = document.createElement('span');
+            highlightSpan.classList.add(info.commentId);
+            highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
+
+            highlightSpan.addEventListener('click', function () {
+                showCommentContent(info.commentContent);
+            });
+
+            var clonedContent = deserializedRange.cloneContents();
+            console.log(clonedContent)
+            // range.surroundContents(highlightSpan);
+            highlightSpan.appendChild(clonedContent);
+
+            // clonedContent.surroundContents(highlightSpan);
+            deserializedRange.deleteContents();
+            // console.log(range.cloneContents());
+            deserializedRange.insertNode(highlightSpan);
+
+        })
+    }
+    function showCommentContent(comment) {
+        alert("CommentContent: " + comment);
     }
 
     function getSelectedMarkup() {

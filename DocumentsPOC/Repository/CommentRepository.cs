@@ -1,5 +1,7 @@
 ﻿using DocumentsPOC.Context;
+using DocumentsPOC.Dto;
 using DocumentsPOC.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DocumentsPOC.Repository
 {
@@ -11,12 +13,29 @@ namespace DocumentsPOC.Repository
             _context = context;
         }
 
-        public async Task<Guid> AddComment(Comment comment)
+        public async Task<Guid?> AddComment(Comment comment)
         {
-            _context.Comments.Add(comment);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.Comments.AddAsync(comment);
+                await _context.SaveChangesAsync();
 
-            return comment.CommentId;
+                return comment.CommentId;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task<RangeAndCommentsDto> GetAllCommentsByDocumentId(int docId)
+        {
+            var ranges = await _context.Comments.Where(x => x.DocumentId == docId).Select(x => x.Range).ToListAsync();
+
+            RangeAndCommentsDto rangeAndCommentsDto = new RangeAndCommentsDto() { Ranges = ranges };
+
+            return rangeAndCommentsDto;
+
         }
     }
 }

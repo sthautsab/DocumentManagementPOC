@@ -8,7 +8,7 @@
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Learn <b>about</b> <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <button id="show">Get Markup</button>
 </div>
 
@@ -21,85 +21,112 @@
     });
 
     function getSelectedMarkup() {
+        window.getSelection().removeAllRanges():
         var selection = window.getSelection();
 
-        
+
         var range = selection.getRangeAt(0);
 
-    
-
-        window.getSelection().addRange(range);
-        console.log(range)
-        console.log(range.cloneContents())
-        // Normalize the range to cover the entire selection
-        // range.normalize;
+        var serializedRange = serializeRange(range);
 
         
+        console.log(range.cloneContents())
 
-        //Create a new element to wrap the selected text
-        var highlightSpan = document.createElement('span');
-        highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
-
-        var clonedContent = range.cloneContents();
-        // range.surroundContents(highlightSpan);
-        highlightSpan.appendChild(clonedContent);
-
-       // clonedContent.surroundContents(highlightSpan);
-        range.deleteContents();
-        console.log(range.cloneContents());
-        range.insertNode(highlightSpan);
+      
 
 
-        // // Wrap the selected text with the new element
-        // range.surroundContents(highlightSpan);
 
-        // var range = document.createRange();
+         //Create a new element to wrap the selected text
+         var highlightSpan = document.createElement('span');
+         highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
 
-        // // Set the start and end points of the range
-        // range.setStart(selection.anchorNode, selection.anchorOffset);
-        // range.setEnd(selection.focusNode, selection.focusOffset);
+         var clonedContent = range.cloneContents();
+         // range.surroundContents(highlightSpan);
+         highlightSpan.appendChild(clonedContent);
 
-        // // Highlight the selected text range
-        // var selectionHighlight = document.createElement('span');
-        // selectionHighlight.style.backgroundColor = 'yellow';
-        // range.surroundContents(selectionHighlight);
-
-        // // Clear any existing selections
-        // window.getSelection().removeAllRanges();
-
-        // Add the new range to the selection
-        // var gotSelec = window.getSelection().addRange(range);
-
-        // console.log("got selection", gotSelec);
-        console.log("selection obj",selection);
-        // if (selection.rangeCount > 0) {
-        //     var range = selection.getRangeAt(0);
-        //     // console.log(range)
-        //     var container = document.createElement('div');
-        //     container.appendChild(range.cloneContents());
-
-        //     // console.log(container.innerHTML);
-        //     var parent = range.commonAncestorContainer.parentNode;
-
-        //     // console.log("parent",parent)
-
-        //     var elWithSelection = parent.cloneNode(false); // Cloning only the element, not its children
-        //     elWithSelection.innerHTML = container.innerHTML;
-        //     return elWithSelection.outerHTML;
-        // } else {
-        //     return "No text selected.";
-        // }
+        // clonedContent.surroundContents(highlightSpan);
+         range.deleteContents();
+         console.log(range.cloneContents());
+         range.insertNode(highlightSpan);
     }
 
-    // function getSelectedMarkup() {
-    //     var selection = window.getSelection();
-    //     if (selection.rangeCount > 0) {
-    //         var range = selection.getRangeAt(0);
-    //         var container = document.createElement('div');
-    //         container.appendChild(range.cloneContents());
-    //         return container.outerHTML;
-    //     } else {
-    //         return "No text selected.";
+    function serializeRange(range) {
+        var serialized = {
+            startContainer: range.startContainer,
+            startOffset: range.startOffset,
+            endContainer: range.endContainer,
+            endOffset: range.endOffset
+        };
+        return JSON.stringify(serialized);
+    }
+
+    // function walkRange(range) {
+    //     let ranges = [];
+
+    //     let el = range.startContainer;
+    //     let elsToVisit = true;
+    //     while (elsToVisit) {
+    //         let startOffset = el == range.startContainer ? range.startOffset : 0;
+    //         let endOffset = el == range.endContainer ? range.endOffset : el.textContent.length;
+    //         let r = document.createRange();
+    //         r.setStart(el, startOffset);
+    //         r.setEnd(el, endOffset);
+    //         ranges.push(r);
+
+
+    //         /// Move to the next text container in the tree order
+    //         elsToVisit = false;
+    //         while (!elsToVisit && el != range.endContainer) {
+    //             let nextEl = getFirstTextNode(el.nextSibling);
+    //             if (nextEl) {
+    //                 el = nextEl;
+    //                 elsToVisit = true;
+    //             }
+    //             else {
+    //                 if (el.nextSibling) el = el.nextSibling;
+    //                 else if (el.parentNode) el = el.parentNode;
+    //                 else break;
+    //             }
+    //         }
     //     }
+
+    //     return ranges;
     // }
+
+    // function getFirstTextNode(el) {
+    //     /// Degenerate cases: either el is null, or el is already a text node
+    //     if (!el) return null;
+    //     if (el.nodeType == 3) return el;
+
+    //     for (let child of el.childNodes) {
+    //         if (child.nodeType == 3) {
+    //             return child;
+    //         }
+    //         else {
+    //             let textNode = getFirstTextNode(child);
+    //             if (textNode !== null) return textNode;
+    //         }
+    //     }
+
+    //     return null;
+    // }
+    // realRange.forEach(function (ele) {
+    //     ele.surroundContents(highlightSpan);
+    // })
+    // realRange.surroundContents(highlightSpan);
+
+
+    //  var clonedContent = range.cloneContents();
+    //  // range.surroundContents(highlightSpan);
+    //  highlightSpan.appendChild(clonedContent);
+
+    // // clonedContent.surroundContents(highlightSpan);
+    //  range.deleteContents();
+    //  console.log(range.cloneContents());
+    //  range.insertNode(highlightSpan);
+
+
+
+    // console.log("selection obj",selection);
+       
 </script>

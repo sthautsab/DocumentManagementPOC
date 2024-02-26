@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DocumentsPOC.Migrations
 {
     [DbContext(typeof(DocumentDbContext))]
-    [Migration("20240222073117_addedCommentTable")]
-    partial class addedCommentTable
+    [Migration("20240226055522_addedUsersTable")]
+    partial class addedUsersTable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -41,13 +41,16 @@ namespace DocumentsPOC.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("CommentId");
 
-                    b.HasIndex("DocumentId")
-                        .IsUnique()
-                        .HasFilter("[DocumentId] IS NOT NULL");
+                    b.HasIndex("DocumentId");
 
-                    b.ToTable("Comment");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("DocumentsPOC.Models.Document", b =>
@@ -99,11 +102,32 @@ namespace DocumentsPOC.Migrations
                     b.ToTable("Folders");
                 });
 
+            modelBuilder.Entity("DocumentsPOC.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("DocumentsPOC.Models.Comment", b =>
                 {
                     b.HasOne("DocumentsPOC.Models.Document", null)
-                        .WithOne("Comments")
-                        .HasForeignKey("DocumentsPOC.Models.Comment", "DocumentId");
+                        .WithMany("Comments")
+                        .HasForeignKey("DocumentId");
+
+                    b.HasOne("DocumentsPOC.Models.User", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("DocumentsPOC.Models.Document", b =>
@@ -115,13 +139,17 @@ namespace DocumentsPOC.Migrations
 
             modelBuilder.Entity("DocumentsPOC.Models.Document", b =>
                 {
-                    b.Navigation("Comments")
-                        .IsRequired();
+                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("DocumentsPOC.Models.Folder", b =>
                 {
                     b.Navigation("Documents");
+                });
+
+            modelBuilder.Entity("DocumentsPOC.Models.User", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
