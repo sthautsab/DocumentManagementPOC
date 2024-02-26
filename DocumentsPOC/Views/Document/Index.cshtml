@@ -28,6 +28,11 @@
         <div class="col-3">
             <input type = "text" id="commentTxt"/>
             <button id="commentBtn">Add Comment</button>
+
+            <hr />
+            <div id="commentList">
+
+            </div>
         </div>
     </div>
    
@@ -170,6 +175,11 @@
                 // console.log($("#docContent").innerHTML)
                 $("#docContent").html(response.contentOutputDto.content);
 
+                $("#commentList").html(generateCommentListHtml(response.rangeCommentInfo));
+
+
+
+
                 //hightlight
                 addHighlightForAllRanges(response.rangeCommentInfo);
 
@@ -183,6 +193,27 @@
                 }
             }
         })
+    }
+
+    function generateCommentListHtml(rangeCommentInfo) {
+        var list = document.createElement("ul");
+
+        rangeCommentInfo.forEach(function (info) {
+            var listElement = document.createElement("li");
+            listElement.classList.add("list_" + info.commentId);
+
+            var textNode = document.createTextNode(info.commentContent);
+            listElement.appendChild(textNode);
+
+            //Add Event
+            listElement.addEventListener('click', function () {
+                commentClickEvent(info.commentId);
+            })
+
+            list.appendChild(listElement);
+
+        });
+        return list;
     }
 
     function addHighlightForAllRanges(rangeCommentInfo) {
@@ -212,6 +243,14 @@
 
         })
     }
+
+    function commentClickEvent(commentId) {
+        var docContent = document.getElementsByClassName(commentId);
+        // docContent.style.backgroundColor ='';
+        // docContent.style.backgroundColor ='green';
+
+    }
+
     function showCommentContent(comment) {
         alert("CommentContent: " + comment);
     }
