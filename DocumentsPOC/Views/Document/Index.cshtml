@@ -3,6 +3,10 @@
 @using DocumentsPOC.Dto
 @model List<DocumentListDto>
 
+   @*  <style>
+    
+    </style> *@
+
 <div class="container">
     <div class="row">
         <div class="col-3">
@@ -70,7 +74,7 @@
 
                 console.log("Currently selected docId",currentlySelectedDocumentId)
 
-                handleClick(docId);
+                handleDocumentListClick(docId);
             });
         });
 
@@ -161,7 +165,7 @@
     });
 
     
-    function handleClick(id) {
+    function handleDocumentListClick(id) {
         window.getSelection().removeAllRanges();
 
         console.log("Clicked item id is " + id);
@@ -195,25 +199,50 @@
         })
     }
 
+    
+
     function generateCommentListHtml(rangeCommentInfo) {
         var list = document.createElement("ul");
 
         rangeCommentInfo.forEach(function (info) {
             var listElement = document.createElement("li");
-            listElement.classList.add("list_" + info.commentId);
+            listElement.classList.add("list_" + info.commentId);    //add a commentId with list_ prefix
 
             var textNode = document.createTextNode(info.commentContent);
             listElement.appendChild(textNode);
 
+            var allHighlightedContentClassName = rangeCommentInfo.map(x => x.commentId);
             //Add Event
             listElement.addEventListener('click', function () {
-                commentClickEvent(info.commentId);
+                if(listElement.classList.contains("nowSelectedComment")){
+                    listElement.classList.remove("nowSelectedComment");
+                    return;
+                }
+                commentClickEvent(info.commentId, allHighlightedContentClassName);  //sends all the list of the commentId ie class for the highlighted content
             })
 
             list.appendChild(listElement);
 
         });
         return list;
+    }
+
+    //Add eventListener for the commentList
+    function commentClickEvent(contentToHighlightClassName, allHighlightedContentClassName) {
+        allHighlightedContentClassName.forEach(function (contentClass) {
+            var content = document.getElementsByClassName(contentClass);
+            if (contentToHighlightClassName != contentClass && content[0].classList.contains("nowSelected")) {
+                content[0].classList.remove("nowSelected");
+                content[0].setAttribute('style','background-color:yellow');
+            }
+
+            if (contentToHighlightClassName == contentClass && !content[0].classList.contains("nowSelected")) {
+                content[0].removeAttribute('style');
+                content[0].classList.add("nowSelected");
+            }
+        })
+        
+
     }
 
     function addHighlightForAllRanges(rangeCommentInfo) {
@@ -227,8 +256,15 @@
             highlightSpan.classList.add(info.commentId);
             highlightSpan.style.backgroundColor = 'yellow'; // Apply desired highlight color
 
+            var allCommentsListElementClassName = rangeCommentInfo.map(x => ("list_"+x.commentId));
             highlightSpan.addEventListener('click', function () {
-                showCommentContent(info.commentContent);
+                if (highlightSpan.classList.contains("nowSelected")) {
+                    highlightSpan.classList.remove("nowSelected");
+                    highlightSpan.setAttribute('style', 'background-color:yellow');
+                    return;
+                }
+                highlightedContentClickEvent("list_"+info.commentId, allCommentsListElementClassName)
+                // showCommentContent(info.commentContent);
             });
 
             var clonedContent = deserializedRange.cloneContents();
@@ -244,12 +280,29 @@
         })
     }
 
-    function commentClickEvent(commentId) {
-        var docContent = document.getElementsByClassName(commentId);
-        // docContent.style.backgroundColor ='';
-        // docContent.style.backgroundColor ='green';
+    //Add eventListener for the highlightedContent
+    function highlightedContentClickEvent(selectedContentRelatedCommentListElementClassName, allCommentsListElementClassName) {
+        allCommentsListElementClassName.forEach(function (commentClass) {
+            var commentListElement = document.getElementsByClassName(commentClass);
+            if (selectedContentRelatedCommentListElementClassName != commentClass && commentListElement[0].classList.contains("nowSelectedComment")) {
+                commentListElement[0].classList.remove("nowSelectedComment");
+                commentListElement[0].setAttribute('style', 'background-color:none');
+            }
+
+            if (selectedContentRelatedCommentListElementClassName == commentClass && !commentListElement[0].classList.contains("nowSelectedComment")) {
+                commentListElement[0].removeAttribute('style');
+                commentListElement[0].classList.add("nowSelectedComment");
+            }
+
+            // if (selectedContentRelatedCommentListElementClassName == commentClass && commentListElement[0].classList.contains("nowSelectedComment")) {
+            //     commentListElement[0].removeAttribute('style');
+            //     commentListElement[0].classList.remove("nowSelectedComment");
+            // }
+        })
+
 
     }
+   
 
     function showCommentContent(comment) {
         alert("CommentContent: " + comment);

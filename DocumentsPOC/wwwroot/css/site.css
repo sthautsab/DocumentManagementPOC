@@ -34,3 +34,12 @@ body {
     user-select: none;
 }
 
+ .nowSelected{
+            background-color:gray;
+            
+        }
+
+.nowSelectedComment {
+    background-color: gray;
+} 
+

@@ -19,9 +19,26 @@ namespace DocumentsPOC.Repository
             return documents;
         }
 
-        public async Task<Document> GetDocumentById(int docId)
+        public async Task<Document> GetDocumentById(int docId, int loggedInUserId)
         {
-            var document = await _context.Documents.Include(x => x.Comments).Where(x => x.Id == docId).FirstOrDefaultAsync();
+            //var document = await _context.Documents
+            //    .Include(x => x.Comments.Where(c => c.UserId == loggedInUserId))
+            //    .Where(x => x.Id == docId)
+            //    .FirstOrDefaultAsync();
+            var document = await _context.Documents
+            .Where(x => x.Id == docId)
+            .Select(x => new Document
+            {
+                Id = x.Id,
+                Content = x.Content,
+                Title = x.Title,
+                ParentId = x.ParentId,
+                FolderId = x.FolderId,
+                IsSelectable = x.IsSelectable,
+                Comments = x.Comments.Where(c => c.UserId == loggedInUserId).ToList(),
+                // Include other properties as needed
+            })
+            .FirstOrDefaultAsync();
             return document;
         }
 

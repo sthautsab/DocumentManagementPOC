@@ -1,9 +1,11 @@
 ﻿using DocumentsPOC.Dto;
 using DocumentsPOC.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DocumentsPOC.Controllers
 {
+    [Authorize]
     public class HtmlInsertController : Controller
     {
 

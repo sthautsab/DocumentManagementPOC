@@ -1,24 +1,35 @@
-﻿
+﻿@* @{
+    Layout = null;
+} *@
+@* <script src="~/lib/jquery/dist/jquery.min.js"></script> *@
+
+
 <div class="d-flex align-center justify-content-center">
     <div>
-        <input id="loginInput"/>
+        <input id="loginInput" />
     </div>
     <button id="loginBtn">Login</button>
+   @*  @if (ViewData["ValidateMessage"] != null)
+    {
+        <br />
+        <br />
+        <label>@ViewData["ValidateMessage"]</label>
+    } *@
 </div>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
 
         $("#loginBtn").click(function () {
             var username = document.getElementById("loginInput").value;
 
             $.ajax({
-                url:'@Url.Action("Login")',
-                type:'POST',
-                contentType:'application/json',
-                data: JSON.stringify({UserName:username}),
+                url: '@Url.Action("Login")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ UserName: username }),
                 success: function (response) {
-                    alert(response)
+
                 }
 
             })

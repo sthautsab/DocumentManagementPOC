@@ -90,8 +90,8 @@
             data: { docId: id },
             success: function (response) {
                 // console.log($("#docContent").innerHTML)
-                $("#docContent").html(response.content);
-                if (!response.isSelectable) {
+                $("#docContent").html(response.contentOutputDto.content);
+                if (!response.contentOutputDto.isSelectable) {
                     document.getElementById("docContent").classList.add("unselectable");
                 }
                 else {

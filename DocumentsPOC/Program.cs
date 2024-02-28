@@ -1,5 +1,6 @@
 using DocumentsPOC.Context;
 using DocumentsPOC.Repository;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,21 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddAuthentication(
+    CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(option =>
+    {
+        option.LoginPath = "/Account/Login";
+        //option.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+
+    });
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20); // Set session timeout
+                                                    // Other session options
+});
 
 //builder.Services.AddDbContext<DocumentDbContext>(options =>
 //            options.UseSqlServer("Data Source=LAPTOP-RLAT42JM\\MSSQLSERVER05;  Initial Catalog=[DocumentDb]; Integrated Security=True;"));
@@ -34,10 +50,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseSession();
+
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

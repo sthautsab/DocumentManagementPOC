@@ -13,6 +13,6 @@ namespace DocumentsPOC.Repository
 
         Task AddDocumentToFolder(int docId, int folderId);
 
-        Task<Document> GetDocumentById(int docId);
+        Task<Document> GetDocumentById(int docId, int loggedInUserId);
     }
 }
